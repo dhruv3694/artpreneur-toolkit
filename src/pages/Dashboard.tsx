@@ -8,6 +8,7 @@ import { LogOut, Palette } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import ExpenseTracker from "@/components/ExpenseTracker";
 import PricingCalculator from "@/components/PricingCalculator";
+import AdvancedPricingCalculator from "@/components/AdvancedPricingCalculator";
 import LearningHub from "@/components/LearningHub";
 import CommunityForum from "@/components/CommunityForum";
 import AIAssistant from "@/components/AIAssistant";
@@ -94,9 +95,10 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="expenses" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+            <TabsTrigger value="pricing">Basic Pricing</TabsTrigger>
+            <TabsTrigger value="advanced">AI Valuation</TabsTrigger>
             <TabsTrigger value="learning">Learning</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
@@ -107,6 +109,10 @@ const Dashboard = () => {
 
           <TabsContent value="pricing">
             <PricingCalculator userId={user?.id || ""} />
+          </TabsContent>
+
+          <TabsContent value="advanced">
+            <AdvancedPricingCalculator userId={user?.id || ""} />
           </TabsContent>
 
           <TabsContent value="learning">

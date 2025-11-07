@@ -13,8 +13,8 @@ serve(async (req) => {
   try {
     const { 
       artworkTitle,
-      artworkDescription,
-      materialsUsed,
+      artworkDescription, 
+      materialsUsed, 
       timeSpent,
       expectedOutcome,
       actualFeelings,
@@ -28,31 +28,35 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Construct detailed prompt for art valuation
     const systemPrompt = `You are an expert art and design financial advisor and critic. You evaluate artworks, designs, or creative projects by combining business logic with emotional and artistic understanding.
-
 Your goal is to produce balanced insights — practical yet empathetic — that reflect both the creator's intent and the audience's perception.
 
-Analyze the artwork on multiple dimensions:
-1. Objective Value (market-based pricing considering materials, time, skill level)
-2. Subjective Value (artistic merit, emotional impact, uniqueness)
-3. Sentimental Score (personal attachment, growth, emotional investment)
-4. Market Comparison (how it compares to similar works)
-5. Expectations Gap (difference between expected vs actual feelings)
-6. Recommendations (actionable advice for pricing and improvement)`;
+Analyze the artwork and provide structured output with:
+1. Objective Value (0-100): Market-based assessment considering materials, time, and skill
+2. Subjective Value (0-100): Artistic merit, emotional impact, and creative innovation
+3. Sentimental Score (0-100): Personal attachment, growth significance, and emotional investment
+4. Market Comparison: How this compares to similar works in the market
+5. Emotional Analysis: Deep dive into the creator's emotional journey
+6. Expectations Gap: Analysis of expected vs actual outcome
+7. Recommendations: Actionable advice for pricing and improvement`;
 
-    const userPrompt = `Please analyze this artwork:
+    const userPrompt = `Artwork Title: ${artworkTitle}
 
-Title: ${artworkTitle}
 Description: ${artworkDescription}
-Materials Used: ${materialsUsed}
-Time Spent: ${timeSpent} hours
-Expected Outcome: ${expectedOutcome || 'Not specified'}
-Actual Feelings: ${actualFeelings || 'Not specified'}
-Previous Work Context: ${previousArtworkData || 'No previous work data'}
-Client/Viewer Feedback: ${clientFeedback || 'No feedback yet'}
 
-Provide a comprehensive analysis with scores and insights.`;
+Materials Used: ${materialsUsed}
+
+Time Spent: ${timeSpent} hours
+
+Expected Outcome: ${expectedOutcome || "Not specified"}
+
+Actual Feelings: ${actualFeelings || "Not specified"}
+
+Previous Artwork Context: ${previousArtworkData || "No previous work data provided"}
+
+Client/Viewer Feedback: ${clientFeedback || "No feedback provided"}
+
+Please provide a comprehensive analysis.`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -63,68 +67,60 @@ Provide a comprehensive analysis with scores and insights.`;
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          {
-            role: "system",
-            content: systemPrompt
-          },
-          {
-            role: "user",
-            content: userPrompt
-          }
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
         ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "analyze_artwork_value",
-              description: "Analyze artwork and return structured valuation data",
-              parameters: {
-                type: "object",
-                properties: {
-                  objectiveValue: {
-                    type: "number",
-                    description: "Objective market value in rupees based on materials, time, and skill"
-                  },
-                  subjectiveValue: {
-                    type: "number",
-                    description: "Subjective artistic value score (0-100)"
-                  },
-                  sentimentalScore: {
-                    type: "number",
-                    description: "Sentimental attachment score (0-100)"
-                  },
-                  marketComparison: {
-                    type: "string",
-                    description: "How this artwork compares to similar pieces in the market"
-                  },
-                  emotionalAnalysis: {
-                    type: "string",
-                    description: "Analysis of the emotional journey and artistic growth"
-                  },
-                  expectationsGap: {
-                    type: "string",
-                    description: "Analysis of the gap between expected vs actual feelings"
-                  },
-                  recommendations: {
-                    type: "string",
-                    description: "Actionable recommendations for pricing and improvement"
-                  }
+        tools: [{
+          type: "function",
+          function: {
+            name: "analyze_artwork",
+            description: "Analyze artwork and provide structured valuation",
+            parameters: {
+              type: "object",
+              properties: {
+                objective_value: {
+                  type: "number",
+                  description: "Market-based value score 0-100"
                 },
-                required: [
-                  "objectiveValue",
-                  "subjectiveValue",
-                  "sentimentalScore",
-                  "marketComparison",
-                  "emotionalAnalysis",
-                  "expectationsGap",
-                  "recommendations"
-                ],
-                additionalProperties: false
-              }
+                subjective_value: {
+                  type: "number",
+                  description: "Artistic merit score 0-100"
+                },
+                sentimental_score: {
+                  type: "number",
+                  description: "Emotional attachment score 0-100"
+                },
+                market_comparison: {
+                  type: "string",
+                  description: "Comparison with similar works in market"
+                },
+                emotional_analysis: {
+                  type: "string",
+                  description: "Deep analysis of creator's emotional journey"
+                },
+                expectations_gap: {
+                  type: "string",
+                  description: "Analysis of expected vs actual outcome"
+                },
+                recommendations: {
+                  type: "string",
+                  description: "Actionable advice for pricing and improvement"
+                }
+              },
+              required: [
+                "objective_value",
+                "subjective_value", 
+                "sentimental_score",
+                "market_comparison",
+                "emotional_analysis",
+                "expectations_gap",
+                "recommendations"
+              ],
+              additionalProperties: false
             }
           }
-        ],
-        tool_choice: { type: "function", function: { name: "analyze_artwork_value" } }
+        }],
+        tool_choice: { type: "function", function: { name: "analyze_artwork" } }
       }),
     });
 
@@ -159,20 +155,19 @@ Provide a comprehensive analysis with scores and insights.`;
     }
 
     const data = await response.json();
-    console.log("AI Response:", JSON.stringify(data, null, 2));
-
-    const toolCall = data.choices[0]?.message?.tool_calls?.[0];
     
+    // Extract tool call response
+    const toolCall = data.choices[0]?.message?.tool_calls?.[0];
     if (!toolCall) {
-      throw new Error("No tool call returned from AI");
+      throw new Error("No tool call in response");
     }
 
-    const analysisResult = JSON.parse(toolCall.function.arguments);
+    const analysis = JSON.parse(toolCall.function.arguments);
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        analysis: analysisResult
+        analysis 
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
