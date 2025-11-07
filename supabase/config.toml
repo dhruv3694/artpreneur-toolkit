@@ -1,1 +1,7 @@
 project_id = "zttvrostduzgodlnodkl"
+
+[functions.ai-assistant]
+verify_jwt = false
+
+[functions.art-valuation]
+verify_jwt = false

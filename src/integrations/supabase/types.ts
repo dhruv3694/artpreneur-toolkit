@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      art_valuations: {
+        Row: {
+          actual_feelings: string | null
+          artwork_description: string
+          artwork_title: string
+          client_feedback: string | null
+          created_at: string
+          emotional_analysis: string | null
+          expectations_gap: string | null
+          expected_outcome: string | null
+          full_analysis: Json | null
+          id: string
+          market_comparison: string | null
+          materials_used: string
+          objective_value: number | null
+          previous_artwork_data: string | null
+          recommendations: string | null
+          sentimental_score: number | null
+          subjective_value: number | null
+          time_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          actual_feelings?: string | null
+          artwork_description: string
+          artwork_title: string
+          client_feedback?: string | null
+          created_at?: string
+          emotional_analysis?: string | null
+          expectations_gap?: string | null
+          expected_outcome?: string | null
+          full_analysis?: Json | null
+          id?: string
+          market_comparison?: string | null
+          materials_used: string
+          objective_value?: number | null
+          previous_artwork_data?: string | null
+          recommendations?: string | null
+          sentimental_score?: number | null
+          subjective_value?: number | null
+          time_spent: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          actual_feelings?: string | null
+          artwork_description?: string
+          artwork_title?: string
+          client_feedback?: string | null
+          created_at?: string
+          emotional_analysis?: string | null
+          expectations_gap?: string | null
+          expected_outcome?: string | null
+          full_analysis?: Json | null
+          id?: string
+          market_comparison?: string | null
+          materials_used?: string
+          objective_value?: number | null
+          previous_artwork_data?: string | null
+          recommendations?: string | null
+          sentimental_score?: number | null
+          subjective_value?: number | null
+          time_spent?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       expenses: {
         Row: {
           amount: number

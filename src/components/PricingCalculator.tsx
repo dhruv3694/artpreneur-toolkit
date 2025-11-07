@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Calculator, History } from "lucide-react";
+import { Calculator, History, Sparkles } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AdvancedPricingCalculator from "./AdvancedPricingCalculator";
 
 interface Calculation {
   id: string;
@@ -74,8 +76,20 @@ const PricingCalculator = ({ userId }: { userId: string }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 shadow-card">
+    <Tabs defaultValue="basic" className="w-full">
+      <TabsList className="grid w-full grid-cols-2 mb-6">
+        <TabsTrigger value="basic" className="flex items-center gap-2">
+          <Calculator className="h-4 w-4" />
+          Basic Calculator
+        </TabsTrigger>
+        <TabsTrigger value="advanced" className="flex items-center gap-2">
+          <Sparkles className="h-4 w-4" />
+          Advanced AI Valuation
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="basic" className="space-y-6">
+        <Card className="p-6 shadow-card">
         <div className="flex items-center gap-2 mb-4">
           <Calculator className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold">Pricing Calculator</h2>
@@ -187,7 +201,12 @@ const PricingCalculator = ({ userId }: { userId: string }) => {
           </div>
         </Card>
       )}
-    </div>
+      </TabsContent>
+
+      <TabsContent value="advanced">
+        <AdvancedPricingCalculator userId={userId} />
+      </TabsContent>
+    </Tabs>
   );
 };
 
