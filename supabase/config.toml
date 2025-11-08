@@ -5,3 +5,12 @@ verify_jwt = false
 
 [functions.art-valuation]
 verify_jwt = false
+
+[functions.ai-mentor]
+verify_jwt = false
+
+[functions.funding-recommender]
+verify_jwt = false
+
+[functions.calculate-health-score]
+verify_jwt = true

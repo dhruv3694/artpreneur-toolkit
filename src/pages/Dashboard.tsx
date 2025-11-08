@@ -12,6 +12,9 @@ import AdvancedPricingCalculator from "@/components/AdvancedPricingCalculator";
 import LearningHub from "@/components/LearningHub";
 import CommunityForum from "@/components/CommunityForum";
 import AIAssistant from "@/components/AIAssistant";
+import CreativeHealthScore from "@/components/CreativeHealthScore";
+import AIMentor from "@/components/AIMentor";
+import FundingRecommender from "@/components/FundingRecommender";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -94,14 +97,29 @@ const Dashboard = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="expenses" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+        <Tabs defaultValue="health" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 lg:w-auto lg:inline-grid">
+            <TabsTrigger value="health">Health</TabsTrigger>
+            <TabsTrigger value="mentor">AI Mentor</TabsTrigger>
+            <TabsTrigger value="funding">Funding</TabsTrigger>
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
             <TabsTrigger value="pricing">Basic Pricing</TabsTrigger>
             <TabsTrigger value="advanced">AI Valuation</TabsTrigger>
             <TabsTrigger value="learning">Learning</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="health">
+            <CreativeHealthScore userId={user?.id || ""} />
+          </TabsContent>
+
+          <TabsContent value="mentor">
+            <AIMentor userId={user?.id || ""} userProfile={profile} />
+          </TabsContent>
+
+          <TabsContent value="funding">
+            <FundingRecommender userId={user?.id || ""} userProfile={profile} />
+          </TabsContent>
 
           <TabsContent value="expenses">
             <ExpenseTracker userId={user?.id || ""} />

@@ -83,6 +83,45 @@ export type Database = {
         }
         Relationships: []
       }
+      creative_health_scores: {
+        Row: {
+          community_participation_score: number
+          created_at: string
+          financial_health_score: number
+          id: string
+          last_calculated_at: string
+          learning_engagement_score: number
+          overall_score: number
+          productivity_score: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_participation_score?: number
+          created_at?: string
+          financial_health_score?: number
+          id?: string
+          last_calculated_at?: string
+          learning_engagement_score?: number
+          overall_score?: number
+          productivity_score?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_participation_score?: number
+          created_at?: string
+          financial_health_score?: number
+          id?: string
+          last_calculated_at?: string
+          learning_engagement_score?: number
+          overall_score?: number
+          productivity_score?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       expenses: {
         Row: {
           amount: number
@@ -181,6 +220,48 @@ export type Database = {
         }
         Relationships: []
       }
+      funding_recommendations: {
+        Row: {
+          amount_range: string
+          application_url: string | null
+          created_at: string
+          deadline: string | null
+          description: string
+          eligibility: string
+          grant_name: string
+          id: string
+          match_score: number
+          organization: string
+          user_id: string
+        }
+        Insert: {
+          amount_range: string
+          application_url?: string | null
+          created_at?: string
+          deadline?: string | null
+          description: string
+          eligibility: string
+          grant_name: string
+          id?: string
+          match_score?: number
+          organization: string
+          user_id: string
+        }
+        Update: {
+          amount_range?: string
+          application_url?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string
+          eligibility?: string
+          grant_name?: string
+          id?: string
+          match_score?: number
+          organization?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       learning_content: {
         Row: {
           content: string
@@ -208,6 +289,30 @@ export type Database = {
           tags?: string[] | null
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      mentor_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          role?: string
+          user_id?: string
         }
         Relationships: []
       }
