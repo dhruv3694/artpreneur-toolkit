@@ -1,4 +1,4 @@
-+## Project info
+## Project info:
 
 **URL**:(https://github.com/dhruv3694/Artpreneur)
 
