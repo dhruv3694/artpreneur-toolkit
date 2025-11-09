@@ -74,41 +74,91 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b bg-card shadow-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Palette className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+      <header className="glass shadow-glass sticky top-0 z-10 border-b border-white/20">
+        <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
+              <Palette className="h-5 w-5 text-white" />
+            </div>
+            <h1 className="text-3xl font-heading font-bold bg-gradient-primary bg-clip-text text-transparent">
               Artpreneur
             </h1>
           </div>
-          <div className="flex items-center gap-4">
-            <p className="text-sm text-muted-foreground">
-              Welcome, <span className="font-medium text-foreground">{profile?.name || "User"}</span>
+          <div className="flex items-center gap-6">
+            <p className="text-sm text-muted-foreground hidden sm:block">
+              Welcome, <span className="font-semibold text-foreground">{profile?.name || "Artist"}</span>
             </p>
-            <Button onClick={handleLogout} variant="outline" size="sm">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
+            <div className="h-10 w-10 rounded-full bg-gradient-primary flex items-center justify-center text-white font-semibold shadow-card cursor-pointer hover:shadow-card-hover transition-all duration-300 hover:scale-105">
+              {(profile?.name || "U").charAt(0).toUpperCase()}
+            </div>
+            <Button onClick={handleLogout} variant="glass" size="sm">
+              <LogOut className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
-        <Tabs defaultValue="health" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 lg:w-auto lg:inline-grid gap-1">
-            <TabsTrigger value="health">Health</TabsTrigger>
-            <TabsTrigger value="mentor">AI Mentor</TabsTrigger>
-            <TabsTrigger value="funding">Funding</TabsTrigger>
-            <TabsTrigger value="market">Market</TabsTrigger>
-            <TabsTrigger value="expenses">Expenses</TabsTrigger>
-            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-            <TabsTrigger value="advanced">Valuation</TabsTrigger>
-            <TabsTrigger value="learning">Learning</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
+      <div className="container mx-auto px-6 py-10">
+        <Tabs defaultValue="health" className="space-y-8">
+          <TabsList className="glass shadow-glass border border-white/20 p-2 grid w-full grid-cols-3 lg:grid-cols-9 lg:w-auto lg:inline-grid gap-2 h-auto">
+            <TabsTrigger 
+              value="health" 
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Health
+            </TabsTrigger>
+            <TabsTrigger 
+              value="mentor"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              AI Mentor
+            </TabsTrigger>
+            <TabsTrigger 
+              value="funding"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Funding
+            </TabsTrigger>
+            <TabsTrigger 
+              value="market"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Market
+            </TabsTrigger>
+            <TabsTrigger 
+              value="expenses"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Expenses
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pricing"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Pricing
+            </TabsTrigger>
+            <TabsTrigger 
+              value="advanced"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Valuation
+            </TabsTrigger>
+            <TabsTrigger 
+              value="learning"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Learning
+            </TabsTrigger>
+            <TabsTrigger 
+              value="community"
+              className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white data-[state=active]:shadow-card rounded-lg transition-all duration-300 hover:scale-105 py-2.5"
+            >
+              Community
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="health">
@@ -151,6 +201,28 @@ const Dashboard = () => {
 
       {/* AI Assistant */}
       <AIAssistant />
+
+      {/* Footer */}
+      <footer className="mt-20 glass shadow-glass border-t border-white/20">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center shadow-card">
+                <Palette className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-heading text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">
+                Artpreneur
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground text-center max-w-md">
+              Empowering Creative Sustainability through Smart Financial Tools
+            </p>
+            <p className="text-xs text-muted-foreground">
+              © 2025 Artpreneur – Built with passion for artists
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

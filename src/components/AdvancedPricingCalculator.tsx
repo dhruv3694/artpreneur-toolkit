@@ -136,85 +136,101 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 shadow-card">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Advanced Art Valuation</h2>
+    <div className="max-w-5xl mx-auto space-y-8">
+      {/* Hero Section */}
+      <div className="text-center space-y-4">
+        <div className="inline-flex items-center gap-3 px-6 py-3 glass rounded-full shadow-glass">
+          <Sparkles className="h-6 w-6 text-primary animate-pulse" />
+          <h2 className="font-heading text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            AI-Powered Art Valuation
+          </h2>
         </div>
-        <p className="text-sm text-muted-foreground mb-6">
-          AI-powered multimodal analysis combining visual assessment, objective pricing, and emotional value
+        <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+          Upload your artwork and get comprehensive analysis with visual insights, emotional value, and market intelligence
         </p>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <Card className="glass shadow-glass border-white/20 hover-lift">
+        <div className="p-8 space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
           {/* Image Upload Section */}
-          <div className="space-y-2">
-            <Label>
-              Artwork Image {imageFile && <Badge variant="secondary" className="ml-2">Vision AI Enabled</Badge>}
+          <div className="space-y-4">
+            <Label htmlFor="artwork-upload" className="flex items-center gap-2 text-base font-semibold">
+              <ImageIcon className="h-5 w-5 text-primary" />
+              Upload Your Artwork
+              {imageFile && <Badge className="ml-2 bg-gradient-primary text-white">✨ Vision AI Enabled</Badge>}
             </Label>
-            <div className="border-2 border-dashed border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="relative group glass border-2 border-dashed border-primary/40 rounded-2xl p-12 text-center cursor-pointer hover:border-primary hover:shadow-glow transition-all duration-500"
+            >
               {imagePreview ? (
-                <div className="relative">
-                  <img 
-                    src={imagePreview} 
-                    alt="Artwork preview" 
-                    className="w-full h-64 object-contain rounded-lg"
-                  />
+                <div className="relative inline-block">
+                  <div className="relative overflow-hidden rounded-2xl shadow-card-hover ring-4 ring-primary/20">
+                    <img
+                      src={imagePreview}
+                      alt="Artwork preview"
+                      className="max-h-80 object-contain"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
                   <Button
                     type="button"
                     variant="destructive"
-                    size="sm"
-                    className="absolute top-2 right-2"
-                    onClick={removeImage}
+                    size="icon"
+                    className="absolute -top-3 -right-3 rounded-full shadow-lg"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeImage();
+                    }}
                   >
                     <X className="h-4 w-4" />
                   </Button>
-                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="mt-4 flex items-center justify-center gap-2 text-sm text-muted-foreground">
                     <ImageIcon className="h-4 w-4 text-primary" />
-                    <span>Visual AI will analyze composition, colors, and style</span>
+                    <span>AI will analyze composition, colors, and visual style</span>
                   </div>
                 </div>
               ) : (
-                <div className="text-center">
-                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Upload artwork image for advanced visual analysis
-                  </p>
-                  <p className="text-xs text-muted-foreground mb-4">
-                    AI will evaluate composition, color harmony, and market trends
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Choose Image
-                  </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
+                <div className="space-y-4 animate-float">
+                  <div className="inline-flex p-6 rounded-full bg-gradient-primary/10">
+                    <Upload className="h-12 w-12 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold text-foreground">Drop your artwork here or click to browse</p>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      PNG, JPG up to 10MB • AI will analyze composition, colors, and style
+                    </p>
+                    <Badge variant="secondary" className="mt-3">
+                      Visual AI Analysis Available
+                    </Badge>
+                  </div>
                 </div>
               )}
             </div>
+            <input
+              ref={fileInputRef}
+              id="artwork-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="hidden"
+            />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="title">Artwork Title *</Label>
+          <div className="space-y-3">
+            <Label htmlFor="title" className="text-base font-semibold">Artwork Title *</Label>
             <Input
               id="title"
               value={formData.artworkTitle}
               onChange={(e) => setFormData({ ...formData, artworkTitle: e.target.value })}
               required
               placeholder="e.g., Sunset Dreams"
+              className="h-12 glass border-primary/30 rounded-xl"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Artwork Description *</Label>
+          <div className="space-y-3">
+            <Label htmlFor="description" className="text-base font-semibold">Artwork Description *</Label>
             <Textarea
               id="description"
               value={formData.artworkDescription}
@@ -222,23 +238,25 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
               required
               placeholder="Describe your artwork, the inspiration, and what it represents..."
               rows={4}
+              className="glass border-primary/30 rounded-xl resize-none"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="materials">Materials Used *</Label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <Label htmlFor="materials" className="text-base font-semibold">Materials Used *</Label>
               <Input
                 id="materials"
                 value={formData.materialsUsed}
                 onChange={(e) => setFormData({ ...formData, materialsUsed: e.target.value })}
                 required
                 placeholder="e.g., Acrylic on canvas, digital"
+                className="h-12 glass border-primary/30 rounded-xl"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="time">Time Spent (hours) *</Label>
+            <div className="space-y-3">
+              <Label htmlFor="time" className="text-base font-semibold">Time Spent (hours) *</Label>
               <Input
                 id="time"
                 type="number"
@@ -247,138 +265,182 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
                 onChange={(e) => setFormData({ ...formData, timeSpent: e.target.value })}
                 required
                 placeholder="e.g., 40"
+                className="h-12 glass border-primary/30 rounded-xl"
               />
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="expected">Expected Outcome</Label>
-            <Textarea
-              id="expected"
-              value={formData.expectedOutcome}
-              onChange={(e) => setFormData({ ...formData, expectedOutcome: e.target.value })}
-              placeholder="What did you expect from this artwork?"
-              rows={2}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <Label htmlFor="expected" className="text-base font-semibold">Expected Outcome</Label>
+              <Textarea
+                id="expected"
+                value={formData.expectedOutcome}
+                onChange={(e) => setFormData({ ...formData, expectedOutcome: e.target.value })}
+                placeholder="What did you expect from this artwork?"
+                rows={3}
+                className="glass border-primary/30 rounded-xl resize-none"
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label htmlFor="feelings" className="text-base font-semibold">Actual Feelings</Label>
+              <Textarea
+                id="feelings"
+                value={formData.actualFeelings}
+                onChange={(e) => setFormData({ ...formData, actualFeelings: e.target.value })}
+                placeholder="How do you feel about the finished work?"
+                rows={3}
+                className="glass border-primary/30 rounded-xl resize-none"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="feelings">Actual Feelings</Label>
-            <Textarea
-              id="feelings"
-              value={formData.actualFeelings}
-              onChange={(e) => setFormData({ ...formData, actualFeelings: e.target.value })}
-              placeholder="How do you feel about the finished work?"
-              rows={2}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="previous">Previous Artwork Data</Label>
+          <div className="space-y-3">
+            <Label htmlFor="previous" className="text-base font-semibold">Previous Artwork Data</Label>
             <Textarea
               id="previous"
               value={formData.previousArtworkData}
               onChange={(e) => setFormData({ ...formData, previousArtworkData: e.target.value })}
               placeholder="Describe similar previous work, prices, feedback..."
-              rows={2}
+              rows={3}
+              className="glass border-primary/30 rounded-xl resize-none"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="feedback">Client/Viewer Feedback</Label>
+          <div className="space-y-3">
+            <Label htmlFor="feedback" className="text-base font-semibold">Client/Viewer Feedback</Label>
             <Textarea
               id="feedback"
               value={formData.clientFeedback}
               onChange={(e) => setFormData({ ...formData, clientFeedback: e.target.value })}
               placeholder="What feedback have you received?"
-              rows={2}
+              rows={3}
+              className="glass border-primary/30 rounded-xl resize-none"
             />
           </div>
 
-          <Button type="submit" className="w-full" disabled={isAnalyzing}>
+          <Button type="submit" className="w-full h-14 text-base font-semibold rounded-xl" size="lg" disabled={isAnalyzing}>
             {isAnalyzing ? (
               <>
-                <Sparkles className="mr-2 h-4 w-4 animate-spin" />
-                Analyzing with AI...
+                <Sparkles className="mr-2 h-5 w-5 animate-spin" />
+                Analyzing with AI Magic...
               </>
             ) : (
               <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Analyze Artwork
+                <Sparkles className="mr-2 h-5 w-5" />
+                Get AI-Powered Valuation
               </>
             )}
           </Button>
         </form>
+        </div>
       </Card>
 
       {analysis && (
-        <div className="space-y-4">
-          <Card className="p-6 shadow-card bg-gradient-to-br from-primary/10 to-accent/10">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              Value Scores
+        <div className="space-y-8">
+          <div className="flex items-center justify-between">
+            <h3 className="text-2xl font-heading font-bold flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-primary">
+                <Target className="h-6 w-6 text-white" />
+              </div>
+              Valuation Results
             </h3>
+            <Badge className="bg-gradient-secondary text-white px-4 py-2 text-sm shadow-card">
+              ✨ AI Analysis Complete
+            </Badge>
+          </div>
+
+          <Card className="glass shadow-glass border-primary/30 p-8 hover-lift">
+            <h4 className="text-xl font-heading font-semibold mb-6 text-center">Value Scores</h4>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Objective Value</span>
-                  <span className="text-sm font-bold text-primary">{analysis.objective_value}/100</span>
+                <div className="flex justify-between mb-3">
+                  <span className="text-base font-semibold">Objective Value</span>
+                  <span className="text-lg font-bold text-primary">{analysis.objective_value}/100</span>
                 </div>
-                <Progress value={analysis.objective_value} className="h-3" />
+                <div className="bg-muted/30 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="bg-gradient-primary rounded-full h-4 transition-all duration-1000 shadow-glow" 
+                    style={{ width: `${analysis.objective_value}%` }}
+                  />
+                </div>
               </div>
 
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium">Subjective Value</span>
-                  <span className="text-sm font-bold text-primary">{analysis.subjective_value}/100</span>
+                <div className="flex justify-between mb-3">
+                  <span className="text-base font-semibold">Subjective Value</span>
+                  <span className="text-lg font-bold text-secondary">{analysis.subjective_value}/100</span>
                 </div>
-                <Progress value={analysis.subjective_value} className="h-3" />
+                <div className="bg-muted/30 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="bg-gradient-secondary rounded-full h-4 transition-all duration-1000 shadow-glow" 
+                    style={{ width: `${analysis.subjective_value}%` }}
+                  />
+                </div>
               </div>
 
               <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium flex items-center gap-1">
-                    <Heart className="h-4 w-4 text-red-500" />
+                <div className="flex justify-between mb-3">
+                  <span className="text-base font-semibold flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-destructive" />
                     Sentimental Score
                   </span>
-                  <span className="text-sm font-bold text-primary">{analysis.sentimental_score}/100</span>
+                  <span className="text-lg font-bold text-destructive">{analysis.sentimental_score}/100</span>
                 </div>
-                <Progress value={analysis.sentimental_score} className="h-3" />
+                <div className="bg-muted/30 rounded-full h-4 overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-destructive to-destructive/70 rounded-full h-4 transition-all duration-1000 shadow-glow" 
+                    style={{ width: `${analysis.sentimental_score}%` }}
+                  />
+                </div>
               </div>
             </div>
           </Card>
 
-          <Card className="p-6 shadow-card">
-            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" />
+          <Card className="glass shadow-glass border-success/30 p-8 hover-lift">
+            <h4 className="text-xl font-heading font-semibold mb-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-success/10">
+                <TrendingUp className="h-5 w-5 text-success" />
+              </div>
               Market Comparison
-            </h3>
-            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+            </h4>
+            <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
               {analysis.market_comparison}
             </p>
           </Card>
 
-          <Card className="p-6 shadow-card">
-            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <Heart className="h-5 w-5 text-primary" />
+          <Card className="glass shadow-glass border-destructive/30 p-8 hover-lift">
+            <h4 className="text-xl font-heading font-semibold mb-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-destructive/10">
+                <Heart className="h-5 w-5 text-destructive" />
+              </div>
               Emotional Analysis
-            </h3>
-            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+            </h4>
+            <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
               {analysis.emotional_analysis}
             </p>
           </Card>
 
-          <Card className="p-6 shadow-card">
-            <h3 className="text-lg font-bold mb-3">Expectations Gap</h3>
-            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+          <Card className="glass shadow-glass border-warning/30 p-8 hover-lift">
+            <h4 className="text-xl font-heading font-semibold mb-4 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-warning/10">
+                <Target className="h-5 w-5 text-warning" />
+              </div>
+              Expectations Gap
+            </h4>
+            <p className="text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
               {analysis.expectations_gap}
             </p>
           </Card>
 
-          <Card className="p-6 shadow-card bg-gradient-primary text-white">
-            <h3 className="text-lg font-bold mb-3">Recommendations</h3>
-            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+          <Card className="bg-gradient-primary shadow-card-hover p-8 hover-lift">
+            <h4 className="text-xl font-heading font-semibold mb-4 text-white flex items-center gap-3">
+              <Sparkles className="h-5 w-5" />
+              Recommendations
+            </h4>
+            <p className="text-base leading-relaxed text-white/95 whitespace-pre-wrap">
               {analysis.recommendations}
             </p>
           </Card>
