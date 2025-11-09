@@ -1,5 +1,4 @@
-# Welcome to your Lovable project
-
++
 ## Project info
 
 **URL**:(https://github.com/dhruv3694/Artpreneur)
