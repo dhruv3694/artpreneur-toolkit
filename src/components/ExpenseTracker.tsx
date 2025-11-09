@@ -8,7 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Lightbulb, TrendingDown, AlertTriangle, Target } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const CATEGORIES = ["Materials", "Rent", "Marketing", "Software", "Travel", "Other"];
 const COLORS = ["#8B5CF6", "#14B8A6", "#F59E0B", "#EF4444", "#3B82F6", "#EC4899"];
@@ -101,8 +102,81 @@ const ExpenseTracker = ({ userId }: { userId: string }) => {
     return acc;
   }, []).sort((a, b) => a.month.localeCompare(b.month));
 
+  // AI Financial Insights
+  const currentMonth = new Date().toISOString().substring(0, 7);
+  const currentMonthExpenses = expenses.filter(e => e.date.startsWith(currentMonth));
+  const currentMonthTotal = currentMonthExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  const lastMonth = new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().substring(0, 7);
+  const lastMonthTotal = expenses.filter(e => e.date.startsWith(lastMonth)).reduce((sum, e) => sum + Number(e.amount), 0);
+  
+  const monthlyChange = lastMonthTotal > 0 ? ((currentMonthTotal - lastMonthTotal) / lastMonthTotal) * 100 : 0;
+  
+  const highestCategory = categoryData.length > 0 
+    ? categoryData.reduce((max, cat) => cat.value > max.value ? cat : max, categoryData[0])
+    : null;
+
+  const avgMonthlyExpense = monthlyData.length > 0
+    ? monthlyData.reduce((sum, d) => sum + d.amount, 0) / monthlyData.length
+    : 0;
+
+  const insights = [
+    {
+      title: "Monthly Trend",
+      description: monthlyChange > 0 
+        ? `Expenses increased by ${monthlyChange.toFixed(1)}% from last month`
+        : monthlyChange < 0 
+        ? `Great! Expenses decreased by ${Math.abs(monthlyChange).toFixed(1)}% from last month`
+        : "Expenses stable compared to last month",
+      icon: monthlyChange > 10 ? AlertTriangle : TrendingDown,
+      variant: monthlyChange > 10 ? "destructive" : "success",
+    },
+    {
+      title: "Budget Recommendation",
+      description: `Based on your ₹${currentMonthTotal.toFixed(0)} spending, consider saving ₹${(currentMonthTotal * 0.15).toFixed(0)} for taxes`,
+      icon: Target,
+      variant: "default",
+    },
+    {
+      title: "Top Expense Category",
+      description: highestCategory 
+        ? `${highestCategory.name} accounts for ${((highestCategory.value / totalExpenses) * 100).toFixed(0)}% of total expenses`
+        : "Start tracking expenses to see insights",
+      icon: Lightbulb,
+      variant: "secondary",
+    },
+  ];
+
   return (
     <div className="space-y-6">
+      {/* AI Financial Insights */}
+      {expenses.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {insights.map((insight, index) => {
+            const Icon = insight.icon;
+            return (
+              <Card key={index} className="p-4 shadow-card">
+                <div className="flex items-start gap-3">
+                  <div className={`p-2 rounded-lg ${
+                    insight.variant === "destructive" ? "bg-destructive/10 text-destructive" :
+                    insight.variant === "success" ? "bg-success/10 text-success" :
+                    "bg-primary/10 text-primary"
+                  }`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-sm mb-1">{insight.title}</h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {insight.description}
+                    </p>
+                  </div>
+                </div>
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
       <Card className="p-6 shadow-card">
         <h2 className="text-2xl font-bold mb-4">Add Expense</h2>
         <form onSubmit={handleAddExpense} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,10 +287,24 @@ const ExpenseTracker = ({ userId }: { userId: string }) => {
 
       <Card className="p-6 shadow-card">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-semibold">Recent Expenses</h3>
-          <p className="text-lg font-medium">
-            Total: <span className="text-primary">₹{totalExpenses.toFixed(2)}</span>
-          </p>
+          <div>
+            <h3 className="text-xl font-semibold">Recent Expenses</h3>
+            {avgMonthlyExpense > 0 && (
+              <p className="text-sm text-muted-foreground">
+                Avg. monthly: ₹{avgMonthlyExpense.toFixed(0)}
+              </p>
+            )}
+          </div>
+          <div className="text-right">
+            <p className="text-lg font-medium">
+              Total: <span className="text-primary">₹{totalExpenses.toFixed(2)}</span>
+            </p>
+            {currentMonthTotal > 0 && (
+              <Badge variant="secondary" className="mt-1">
+                This month: ₹{currentMonthTotal.toFixed(0)}
+              </Badge>
+            )}
+          </div>
         </div>
         <div className="space-y-2">
           {expenses.length > 0 ? (

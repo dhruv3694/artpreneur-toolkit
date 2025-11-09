@@ -15,6 +15,7 @@ import AIAssistant from "@/components/AIAssistant";
 import CreativeHealthScore from "@/components/CreativeHealthScore";
 import AIMentor from "@/components/AIMentor";
 import FundingRecommender from "@/components/FundingRecommender";
+import MarketAnalytics from "@/components/MarketAnalytics";
 
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -98,13 +99,14 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs defaultValue="health" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-3 lg:grid-cols-9 lg:w-auto lg:inline-grid gap-1">
             <TabsTrigger value="health">Health</TabsTrigger>
             <TabsTrigger value="mentor">AI Mentor</TabsTrigger>
             <TabsTrigger value="funding">Funding</TabsTrigger>
+            <TabsTrigger value="market">Market</TabsTrigger>
             <TabsTrigger value="expenses">Expenses</TabsTrigger>
-            <TabsTrigger value="pricing">Basic Pricing</TabsTrigger>
-            <TabsTrigger value="advanced">AI Valuation</TabsTrigger>
+            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+            <TabsTrigger value="advanced">Valuation</TabsTrigger>
             <TabsTrigger value="learning">Learning</TabsTrigger>
             <TabsTrigger value="community">Community</TabsTrigger>
           </TabsList>
@@ -119,6 +121,10 @@ const Dashboard = () => {
 
           <TabsContent value="funding">
             <FundingRecommender userId={user?.id || ""} userProfile={profile} />
+          </TabsContent>
+
+          <TabsContent value="market">
+            <MarketAnalytics />
           </TabsContent>
 
           <TabsContent value="expenses">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles, TrendingUp, Heart, Target } from "lucide-react";
+import { Sparkles, TrendingUp, Heart, Target, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 
 interface AnalysisResult {
   objective_value: number;
@@ -22,6 +23,9 @@ interface AnalysisResult {
 const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
@@ -35,11 +39,48 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
     clientFeedback: "",
   });
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please upload an image smaller than 10MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsAnalyzing(true);
 
     try {
+      let imageBase64 = null;
+      if (imageFile) {
+        const reader = new FileReader();
+        imageBase64 = await new Promise((resolve) => {
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(imageFile);
+        });
+      }
+
       const { data, error } = await supabase.functions.invoke('art-valuation', {
         body: {
           artworkTitle: formData.artworkTitle,
@@ -50,6 +91,7 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
           actualFeelings: formData.actualFeelings,
           previousArtworkData: formData.previousArtworkData,
           clientFeedback: formData.clientFeedback,
+          artworkImage: imageBase64,
         }
       });
 
@@ -101,10 +143,65 @@ const AdvancedPricingCalculator = ({ userId }: { userId: string }) => {
           <h2 className="text-2xl font-bold">Advanced Art Valuation</h2>
         </div>
         <p className="text-sm text-muted-foreground mb-6">
-          AI-powered analysis combining objective pricing, subjective value, and sentimental worth
+          AI-powered multimodal analysis combining visual assessment, objective pricing, and emotional value
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Image Upload Section */}
+          <div className="space-y-2">
+            <Label>
+              Artwork Image {imageFile && <Badge variant="secondary" className="ml-2">Vision AI Enabled</Badge>}
+            </Label>
+            <div className="border-2 border-dashed border-border rounded-lg p-6 hover:border-primary/50 transition-colors">
+              {imagePreview ? (
+                <div className="relative">
+                  <img 
+                    src={imagePreview} 
+                    alt="Artwork preview" 
+                    className="w-full h-64 object-contain rounded-lg"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={removeImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                  <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
+                    <ImageIcon className="h-4 w-4 text-primary" />
+                    <span>Visual AI will analyze composition, colors, and style</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Upload artwork image for advanced visual analysis
+                  </p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    AI will evaluate composition, color harmony, and market trends
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Choose Image
+                  </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="title">Artwork Title *</Label>
             <Input

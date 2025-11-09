@@ -19,7 +19,8 @@ serve(async (req) => {
       expectedOutcome,
       actualFeelings,
       previousArtworkData,
-      clientFeedback 
+      clientFeedback,
+      artworkImage 
     } = await req.json();
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -28,19 +29,27 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert art and design financial advisor and critic. You evaluate artworks, designs, or creative projects by combining business logic with emotional and artistic understanding.
+    const systemPrompt = `You are an expert art and design financial advisor and critic with advanced visual analysis capabilities. You evaluate artworks, designs, or creative projects by combining business logic with emotional and artistic understanding.
 Your goal is to produce balanced insights — practical yet empathetic — that reflect both the creator's intent and the audience's perception.
 
-Analyze the artwork and provide structured output with:
-1. Objective Value (0-100): Market-based assessment considering materials, time, and skill
-2. Subjective Value (0-100): Artistic merit, emotional impact, and creative innovation
-3. Sentimental Score (0-100): Personal attachment, growth significance, and emotional investment
-4. Market Comparison: How this compares to similar works in the market
-5. Emotional Analysis: Deep dive into the creator's emotional journey
-6. Expectations Gap: Analysis of expected vs actual outcome
-7. Recommendations: Actionable advice for pricing and improvement`;
+When analyzing artwork visually, evaluate:
+- Composition and balance
+- Color harmony and palette effectiveness
+- Technical execution and craftsmanship
+- Style alignment with current market trends
+- Visual impact and emotional resonance
+- Similarity to high-performing artworks in the market
 
-    const userPrompt = `Artwork Title: ${artworkTitle}
+Analyze the artwork and provide structured output with:
+1. Objective Value (0-100): Market-based assessment considering materials, time, skill, and visual quality
+2. Subjective Value (0-100): Artistic merit, emotional impact, creative innovation, and visual composition
+3. Sentimental Score (0-100): Personal attachment, growth significance, and emotional investment
+4. Market Comparison: How this compares to similar works, including visual style analysis
+5. Emotional Analysis: Deep dive into the creator's emotional journey and visual expression
+6. Expectations Gap: Analysis of expected vs actual outcome
+7. Recommendations: Actionable advice for pricing, visual improvements, and market positioning`;
+
+    let userContent = `Artwork Title: ${artworkTitle}
 
 Description: ${artworkDescription}
 
@@ -56,7 +65,26 @@ Previous Artwork Context: ${previousArtworkData || "No previous work data provid
 
 Client/Viewer Feedback: ${clientFeedback || "No feedback provided"}
 
-Please provide a comprehensive analysis.`;
+Please provide a comprehensive analysis${artworkImage ? ' including detailed visual assessment of the artwork image' : ''}.`;
+
+    const messages: any[] = [
+      { role: "system", content: systemPrompt }
+    ];
+
+    if (artworkImage) {
+      messages.push({
+        role: "user",
+        content: [
+          { type: "text", text: userContent },
+          { 
+            type: "image_url", 
+            image_url: { url: artworkImage }
+          }
+        ]
+      });
+    } else {
+      messages.push({ role: "user", content: userContent });
+    }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -66,10 +94,7 @@ Please provide a comprehensive analysis.`;
       },
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ],
+        messages,
         tools: [{
           type: "function",
           function: {
