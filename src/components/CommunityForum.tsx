@@ -124,20 +124,25 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <MessageSquare className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Community Forum</h2>
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-gradient-primary/10 backdrop-blur-sm">
+            <MessageSquare className="h-6 w-6 text-primary" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-heading font-bold">Community Forum</h2>
+            <p className="text-sm text-muted-foreground">Connect, share, and learn together</p>
+          </div>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="hover:scale-105 transition-transform shadow-glow">
               <Plus className="h-4 w-4 mr-2" />
               New Post
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="rounded-3xl">
             <DialogHeader>
-              <DialogTitle>Create a New Post</DialogTitle>
+              <DialogTitle className="text-2xl font-heading">Create a New Post</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreatePost} className="space-y-4">
               <div className="space-y-2">
@@ -148,6 +153,7 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
                   onChange={(e) => setTitle(e.target.value)}
                   required
                   placeholder="Ask a question or share a tip..."
+                  className="rounded-xl"
                 />
               </div>
               <div className="space-y-2">
@@ -159,6 +165,7 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
                   required
                   placeholder="Provide details..."
                   rows={4}
+                  className="rounded-xl"
                 />
               </div>
               <div className="space-y-2">
@@ -168,6 +175,7 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   placeholder="pricing, tax, marketing"
+                  className="rounded-xl"
                 />
               </div>
               <Button type="submit" className="w-full">
@@ -178,15 +186,16 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
         </Dialog>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         {posts.map((post) => (
           <Card
             key={post.id}
-            className="p-6 shadow-card hover:shadow-card-hover transition-shadow cursor-pointer"
+            className="artistic-card hover-lift cursor-pointer group overflow-hidden"
             onClick={() => setSelectedPost(post)}
           >
-            <div className="flex gap-4">
-              <div className="flex flex-col items-center gap-1">
+            <div className="absolute top-0 left-0 w-2 h-full bg-gradient-primary opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="flex gap-6 p-6">
+              <div className="flex flex-col items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -194,22 +203,23 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
                     e.stopPropagation();
                     handleUpvote(post.id, post.upvotes);
                   }}
+                  className="hover:bg-primary/10 rounded-xl transition-all hover:scale-110"
                 >
-                  <ThumbsUp className="h-4 w-4" />
+                  <ThumbsUp className="h-5 w-5 text-primary" />
                 </Button>
-                <span className="text-sm font-medium">{post.upvotes}</span>
+                <span className="text-base font-bold text-primary">{post.upvotes}</span>
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold mb-2">{post.title}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{post.description}</p>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">by {post.author_name}</span>
+                <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-primary transition-colors">{post.title}</h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{post.description}</p>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="text-xs text-muted-foreground font-medium">by {post.author_name}</span>
                   <span className="text-xs text-muted-foreground">•</span>
                   <span className="text-xs text-muted-foreground">
                     {new Date(post.created_at).toLocaleDateString()}
                   </span>
                   {post.tags?.map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs">
+                    <Badge key={tag} variant="outline" className="text-xs rounded-full border-primary/30">
                       {tag}
                     </Badge>
                   ))}
@@ -221,17 +231,18 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
       </div>
 
       <Dialog open={!!selectedPost} onOpenChange={() => setSelectedPost(null)}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl">
           <DialogHeader>
-            <DialogTitle className="text-xl">{selectedPost?.title}</DialogTitle>
+            <DialogTitle className="text-2xl font-heading">{selectedPost?.title}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <p className="text-muted-foreground">{selectedPost?.description}</p>
+            <p className="text-muted-foreground leading-relaxed">{selectedPost?.description}</p>
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => selectedPost && handleUpvote(selectedPost.id, selectedPost.upvotes)}
+                className="rounded-xl"
               >
                 <ThumbsUp className="h-4 w-4 mr-2" />
                 {selectedPost?.upvotes}
@@ -239,26 +250,27 @@ const CommunityForum = ({ userId, userName }: { userId: string; userName: string
               <span className="text-xs text-muted-foreground">by {selectedPost?.author_name}</span>
             </div>
 
-            <div className="border-t pt-4">
-              <h4 className="font-semibold mb-3">Comments ({comments.length})</h4>
+            <div className="border-t pt-6">
+              <h4 className="font-heading font-semibold text-lg mb-4">Comments ({comments.length})</h4>
               <div className="space-y-3 mb-4">
                 {comments.map((comment) => (
-                  <div key={comment.id} className="bg-muted p-3 rounded-lg">
-                    <p className="text-sm">{comment.content}</p>
-                    <p className="text-xs text-muted-foreground mt-2">
+                  <div key={comment.id} className="bg-muted/50 p-4 rounded-xl backdrop-blur-sm">
+                    <p className="text-sm leading-relaxed">{comment.content}</p>
+                    <p className="text-xs text-muted-foreground mt-3">
                       {comment.author_name} • {new Date(comment.created_at).toLocaleDateString()}
                     </p>
                   </div>
                 ))}
               </div>
-              <form onSubmit={handleAddComment} className="flex gap-2">
+              <form onSubmit={handleAddComment} className="flex gap-3">
                 <Input
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder="Add a comment..."
                   required
+                  className="rounded-xl"
                 />
-                <Button type="submit" size="sm">
+                <Button type="submit" size="sm" className="rounded-xl">
                   <Send className="h-4 w-4" />
                 </Button>
               </form>

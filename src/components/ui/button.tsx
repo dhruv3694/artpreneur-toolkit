@@ -5,23 +5,23 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-gradient-primary text-primary-foreground shadow-card hover:shadow-card-hover hover:-translate-y-0.5",
-        destructive: "bg-destructive text-destructive-foreground shadow-card hover:shadow-card-hover hover:-translate-y-0.5",
-        outline: "border-2 border-primary/30 bg-card/50 backdrop-blur-sm text-foreground hover:bg-primary/10 hover:border-primary/50 hover:-translate-y-0.5",
-        secondary: "bg-gradient-secondary text-secondary-foreground shadow-card hover:shadow-card-hover hover:-translate-y-0.5",
-        ghost: "hover:bg-accent/10 hover:text-accent-foreground",
+        default: "bg-gradient-primary text-primary-foreground shadow-card hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.02]",
+        destructive: "bg-destructive text-destructive-foreground shadow-card hover:shadow-card-hover hover:-translate-y-1",
+        outline: "border-2 border-border bg-card/60 backdrop-blur-sm text-foreground hover:bg-card hover:border-primary/40 hover:-translate-y-1 hover:shadow-soft",
+        secondary: "bg-gradient-secondary text-secondary-foreground shadow-card hover:shadow-card-hover hover:-translate-y-1 hover:scale-[1.02]",
+        ghost: "hover:bg-muted/50 hover:text-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        glass: "glass shadow-glass text-foreground hover:shadow-card-hover hover:-translate-y-0.5",
+        glass: "glass shadow-glass text-foreground hover:shadow-card hover:-translate-y-1",
       },
       size: {
-        default: "h-11 px-6 py-2.5",
-        sm: "h-9 rounded-lg px-4",
-        lg: "h-13 rounded-xl px-10 text-base",
-        icon: "h-11 w-11",
+        default: "h-12 px-7 py-3",
+        sm: "h-10 rounded-lg px-5 text-xs",
+        lg: "h-14 rounded-xl px-12 text-base",
+        icon: "h-12 w-12",
       },
     },
     defaultVariants: {

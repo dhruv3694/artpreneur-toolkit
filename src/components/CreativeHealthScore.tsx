@@ -77,95 +77,110 @@ const CreativeHealthScore = ({ userId }: { userId: string }) => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 shadow-card bg-gradient-to-br from-primary/10 to-accent/10">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <Activity className="h-8 w-8 text-primary" />
-            <div>
-              <h2 className="text-2xl font-bold">Creative Health Score</h2>
-              <p className="text-sm text-muted-foreground">Track your creative wellness</p>
-            </div>
-          </div>
-          <Button onClick={calculateScores} disabled={isCalculating} variant="outline">
-            <RefreshCw className={`h-4 w-4 mr-2 ${isCalculating ? "animate-spin" : ""}`} />
-            {isCalculating ? "Calculating..." : "Refresh"}
-          </Button>
-        </div>
-
-        {scores ? (
-          <div className="space-y-6">
-            <div className="text-center p-6 bg-background/50 rounded-lg">
-              <div className={`text-6xl font-bold mb-2 ${getScoreColor(scores.overall_score)}`}>
-                {scores.overall_score}
+    <div className="space-y-8 animate-fade-in">
+      <Card className="shadow-card hover-lift overflow-hidden rounded-3xl bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5 backdrop-blur-sm">
+        <div className="p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-gradient-primary/20 backdrop-blur-sm animate-float">
+                <Activity className="h-8 w-8 text-primary" />
               </div>
-              <div className="text-lg font-semibold">
-                {getScoreLabel(scores.overall_score)}
-              </div>
-              {scores.last_calculated_at && (
-                <p className="text-xs text-muted-foreground mt-2">
-                  Last updated: {new Date(scores.last_calculated_at).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Productivity</span>
-                  <span className={`ml-auto font-bold ${getScoreColor(scores.productivity_score)}`}>
-                    {scores.productivity_score}
-                  </span>
-                </div>
-                <Progress value={scores.productivity_score} className="h-2" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Financial Health</span>
-                  <span className={`ml-auto font-bold ${getScoreColor(scores.financial_health_score)}`}>
-                    {scores.financial_health_score}
-                  </span>
-                </div>
-                <Progress value={scores.financial_health_score} className="h-2" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Learning Engagement</span>
-                  <span className={`ml-auto font-bold ${getScoreColor(scores.learning_engagement_score)}`}>
-                    {scores.learning_engagement_score}
-                  </span>
-                </div>
-                <Progress value={scores.learning_engagement_score} className="h-2" />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">Community Participation</span>
-                  <span className={`ml-auto font-bold ${getScoreColor(scores.community_participation_score)}`}>
-                    {scores.community_participation_score}
-                  </span>
-                </div>
-                <Progress value={scores.community_participation_score} className="h-2" />
+              <div>
+                <h2 className="text-3xl font-heading font-bold">Creative Health Score</h2>
+                <p className="text-sm text-muted-foreground mt-1">Track your creative wellness journey</p>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground mb-4">
-              Calculate your Creative Health Score to track your creative wellness
-            </p>
-            <Button onClick={calculateScores} disabled={isCalculating}>
-              <Activity className="h-4 w-4 mr-2" />
-              Calculate Score
+            <Button onClick={calculateScores} disabled={isCalculating} variant="outline" className="rounded-xl hover:scale-105 transition-transform">
+              <RefreshCw className={`h-4 w-4 mr-2 ${isCalculating ? "animate-spin" : ""}`} />
+              {isCalculating ? "Calculating..." : "Refresh"}
             </Button>
           </div>
-        )}
+
+          {scores ? (
+            <div className="space-y-8">
+              <div className="text-center p-10 bg-gradient-to-br from-background/80 to-background/60 rounded-2xl shadow-soft backdrop-blur-sm">
+                <div className={`text-7xl font-bold mb-4 ${getScoreColor(scores.overall_score)} animate-pulse`}>
+                  {scores.overall_score}
+                </div>
+                <div className="text-2xl font-heading font-semibold mb-2">
+                  {getScoreLabel(scores.overall_score)}
+                </div>
+                {scores.last_calculated_at && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Last updated: {new Date(scores.last_calculated_at).toLocaleDateString()}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3 p-6 rounded-2xl bg-background/50 backdrop-blur-sm hover:shadow-soft transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-primary/10">
+                      <TrendingUp className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-base font-heading font-medium">Productivity</span>
+                    <span className={`ml-auto text-xl font-bold ${getScoreColor(scores.productivity_score)}`}>
+                      {scores.productivity_score}
+                    </span>
+                  </div>
+                  <Progress value={scores.productivity_score} className="h-3 rounded-full" />
+                </div>
+
+                <div className="space-y-3 p-6 rounded-2xl bg-background/50 backdrop-blur-sm hover:shadow-soft transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-primary/10">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-base font-heading font-medium">Financial Health</span>
+                    <span className={`ml-auto text-xl font-bold ${getScoreColor(scores.financial_health_score)}`}>
+                      {scores.financial_health_score}
+                    </span>
+                  </div>
+                  <Progress value={scores.financial_health_score} className="h-3 rounded-full" />
+                </div>
+
+                <div className="space-y-3 p-6 rounded-2xl bg-background/50 backdrop-blur-sm hover:shadow-soft transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-primary/10">
+                      <BookOpen className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-base font-heading font-medium">Learning Engagement</span>
+                    <span className={`ml-auto text-xl font-bold ${getScoreColor(scores.learning_engagement_score)}`}>
+                      {scores.learning_engagement_score}
+                    </span>
+                  </div>
+                  <Progress value={scores.learning_engagement_score} className="h-3 rounded-full" />
+                </div>
+
+                <div className="space-y-3 p-6 rounded-2xl bg-background/50 backdrop-blur-sm hover:shadow-soft transition-shadow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg bg-gradient-primary/10">
+                      <Users className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="text-base font-heading font-medium">Community Participation</span>
+                    <span className={`ml-auto text-xl font-bold ${getScoreColor(scores.community_participation_score)}`}>
+                      {scores.community_participation_score}
+                    </span>
+                  </div>
+                  <Progress value={scores.community_participation_score} className="h-3 rounded-full" />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="p-4 rounded-2xl bg-gradient-primary/10 backdrop-blur-sm w-fit mx-auto mb-6 animate-float">
+                <Activity className="h-20 w-20 text-primary opacity-70" />
+              </div>
+              <p className="text-lg font-heading text-muted-foreground mb-6 max-w-md mx-auto">
+                Calculate your Creative Health Score to track your creative wellness and growth
+              </p>
+              <Button onClick={calculateScores} disabled={isCalculating} className="rounded-xl shadow-glow hover:scale-105 transition-transform">
+                <Activity className="h-4 w-4 mr-2" />
+                Calculate Score
+              </Button>
+            </div>
+          )}
+        </div>
       </Card>
     </div>
   );

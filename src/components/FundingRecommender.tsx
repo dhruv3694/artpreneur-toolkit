@@ -82,73 +82,89 @@ const FundingRecommender = ({ userId, userProfile }: { userId: string; userProfi
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6 shadow-card">
-        <div className="flex items-center gap-2 mb-4">
-          <DollarSign className="h-6 w-6 text-primary" />
-          <h2 className="text-2xl font-bold">Funding & Grant Recommender</h2>
-        </div>
-        <p className="text-sm text-muted-foreground mb-6">
-          AI-powered recommendations for grants, fellowships, and funding opportunities tailored to your profile
-        </p>
+    <div className="space-y-6 animate-fade-in">
+      <Card className="shadow-card hover-lift overflow-hidden rounded-3xl">
+        <div className="p-8 bg-gradient-to-br from-primary/5 via-accent/5 to-secondary/5">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-3 rounded-xl bg-gradient-primary/20 backdrop-blur-sm">
+              <DollarSign className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-3xl font-heading font-bold">Funding & Grant Recommender</h2>
+              <p className="text-sm text-muted-foreground mt-1">Discover opportunities tailored to your creative journey</p>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground mb-8 leading-relaxed">
+            AI-powered recommendations for grants, fellowships, and funding opportunities based on your artistic profile and work
+          </p>
 
-        <Button onClick={generateRecommendations} disabled={isGenerating} className="w-full">
-          <TrendingUp className="mr-2 h-4 w-4" />
-          {isGenerating ? "Generating Recommendations..." : "Find Funding Opportunities"}
-        </Button>
+          <Button onClick={generateRecommendations} disabled={isGenerating} className="w-full rounded-xl shadow-glow hover:scale-105 transition-transform">
+            <TrendingUp className="mr-2 h-5 w-5" />
+            {isGenerating ? "Generating Recommendations..." : "Find Funding Opportunities"}
+          </Button>
+        </div>
       </Card>
 
       {recommendations.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-5">
           {recommendations
             .sort((a, b) => b.match_score - a.match_score)
             .map((rec, index) => (
-              <Card key={index} className="p-6 shadow-card hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-xl font-bold">{rec.grant_name}</h3>
-                      <Badge className={`${getMatchColor(rec.match_score)} text-white`}>
-                        {rec.match_score}% Match
-                      </Badge>
+              <Card key={index} className="artistic-card hover-lift overflow-hidden group">
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-primary opacity-70"></div>
+                <div className="p-8 pl-10">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-2xl font-heading font-bold group-hover:text-primary transition-colors">{rec.grant_name}</h3>
+                        <Badge className={`${getMatchColor(rec.match_score)} text-white rounded-full px-3 py-1`}>
+                          {rec.match_score}% Match
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground font-medium">{rec.organization}</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">{rec.organization}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-primary">
-                    <DollarSign className="h-4 w-4" />
-                    <span className="font-semibold">{rec.amount_range}</span>
                   </div>
 
-                  {rec.deadline && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="h-4 w-4" />
-                      <span className="text-sm">Deadline: {rec.deadline}</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3 text-primary font-semibold">
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <DollarSign className="h-5 w-5" />
+                      </div>
+                      <span className="text-lg">{rec.amount_range}</span>
                     </div>
-                  )}
 
-                  <div className="bg-muted/50 rounded-lg p-3">
-                    <div className="flex items-start gap-2 mb-2">
-                      <CheckCircle className="h-4 w-4 text-primary mt-0.5" />
-                      <div>
-                        <p className="text-xs font-semibold mb-1">Eligibility</p>
-                        <p className="text-xs text-muted-foreground">{rec.eligibility}</p>
+                    {rec.deadline && (
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <div className="p-2 rounded-lg bg-muted/50">
+                          <Calendar className="h-5 w-5" />
+                        </div>
+                        <span className="text-sm font-medium">Deadline: {rec.deadline}</span>
+                      </div>
+                    )}
+
+                    <div className="bg-gradient-to-br from-muted/30 to-muted/50 rounded-xl p-5 backdrop-blur-sm">
+                      <div className="flex items-start gap-3 mb-3">
+                        <div className="p-2 rounded-lg bg-primary/10 mt-0.5">
+                          <CheckCircle className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-heading font-semibold mb-2 uppercase tracking-wide">Eligibility</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{rec.eligibility}</p>
+                        </div>
                       </div>
                     </div>
+
+                    <p className="text-sm leading-relaxed text-muted-foreground">{rec.description}</p>
+
+                    {rec.application_url && rec.application_url !== "N/A" && (
+                      <Button variant="outline" size="sm" asChild className="w-full rounded-xl hover:bg-gradient-primary hover:text-white hover:border-transparent transition-all group">
+                        <a href={rec.application_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
+                          View Application
+                          <ExternalLink className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </a>
+                      </Button>
+                    )}
                   </div>
-
-                  <p className="text-sm leading-relaxed">{rec.description}</p>
-
-                  {rec.application_url && rec.application_url !== "N/A" && (
-                    <Button variant="outline" size="sm" asChild className="w-full">
-                      <a href={rec.application_url} target="_blank" rel="noopener noreferrer">
-                        View Application
-                        <ExternalLink className="ml-2 h-4 w-4" />
-                      </a>
-                    </Button>
-                  )}
                 </div>
               </Card>
             ))}
